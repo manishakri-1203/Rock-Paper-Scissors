@@ -1,8 +1,9 @@
 import {Component} from 'react'
 import Popup from 'reactjs-popup'
+import {RiCloseLine} from 'react-icons/ri'
 import ImageButtons from '../ImageButtons'
 import GameResultsView from '../GameResultsView'
-import {RiCloseLine} from 'react-icons/ri'
+
 import {
   MainContainer,
   ScoreMainContainer,
@@ -47,62 +48,35 @@ class Game extends Component {
   onGetButtonId = (id, image) => {
     const {choicesList} = this.props
     const number = Math.floor(Math.random() * choicesList.length)
+    const opponentChoice = choicesList[number]
 
-    if (choicesList[number].id === 'ROCK' && 'SCISSORS') {
+    if (
+      (id === 'PAPER' && opponentChoice.id === 'ROCK') ||
+      (id === 'ROCK' && opponentChoice.id === 'SCISSORS') ||
+      (id === 'SCISSORS' && opponentChoice.id === 'PAPER')
+    ) {
       this.setState(prevState => ({
         showResult: true,
         myChoice: [id, image],
-        opponentChoice: choicesList[number],
-        resultMessage: 'YOU LOSE',
-        score: prevState.score - 1,
-      }))
-    } else if (choicesList[number].id === 'ROCK' && 'PAPER') {
-      this.setState(prevState => ({
-        showResult: true,
-        myChoice: [id, image],
-        opponentChoice: choicesList[number],
+        opponentChoice,
         resultMessage: 'YOU WON',
         score: prevState.score + 1,
       }))
-    } else if (choicesList[number].id === 'PAPER' && 'ROCK') {
-      this.setState(prevState => ({
-        showResult: true,
-        mychoice: [id, image],
-        opponentChoice: choicesList[number],
-        resultMessage: 'YOU LOSE',
-        score: prevState.score - 1,
-      }))
-    } else if (choicesList[number].id === 'PAPER' && 'SCISSORS') {
-      this.setState(prevState => ({
-        showResult: true,
-        myChoice: [id, image],
-        opponentChoice: choicesList[number],
-        resultMessage: 'YOU WON',
-        score: prevState.score + 1,
-      }))
-    } else if (choicesList[number].id === 'SCISSORS' && 'PAPER') {
-      this.setState(prevState => ({
-        showResult: true,
-        myChoice: [id, image],
-        opponentChoice: choicesList[number],
-        resultMessage: 'YOU LOSE',
-        score: prevState.score - 1,
-      }))
-    } else if (choicesList[number].id === 'SCISSORS' && 'ROCK') {
-      this.setState(prevState => ({
-        showResult: true,
-        myChoice: [id, image],
-        opponentChoice: choicesList[number],
-        resultMessage: 'YOU WON',
-        score: prevState.score + 1,
-      }))
-    } else {
+    } else if (id === opponentChoice.id) {
       this.setState({
         showResult: true,
         myChoice: [id, image],
-        opponentChoice: choicesList[number],
+        opponentChoice,
         resultMessage: 'IT IS DRAW',
       })
+    } else {
+      this.setState(prevState => ({
+        showResult: true,
+        myChoice: [id, image],
+        opponentChoice,
+        resultMessage: 'YOU LOSE',
+        score: prevState.score - 1,
+      }))
     }
   }
 
@@ -121,6 +95,7 @@ class Game extends Component {
       </ItemImagesContainer>
     )
   }
+
   render() {
     const {score, showResult} = this.state
     return (
